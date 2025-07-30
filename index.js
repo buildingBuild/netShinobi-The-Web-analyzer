@@ -1,4 +1,4 @@
-const { URL } = require('url'); // To parse my url strings
+const { URL } = require('url');
 const http = require('http');
 const { error } = require('console');
 const dns = require('dns').promises;
@@ -22,26 +22,53 @@ const website = {
 
 
 
-let link = "https://www.google.com";
+let link = "htts://bluemodoro.vercel.com";
 
+LinkValidation_LinkParsing();
 
+async function LinkValidation_LinkParsing() {
+    try {
+        let strippedLink = new URL(link)
+        console.log(strippedLink)
+        if (strippedLink == null) {
+            throw new Error("Link not valid")
+        }
+        else if (strippedLink.protocol !== "https:" && "http:") {
 
+            throw new Error("Link is not formatted properly")
 
-async function websiteExists_andOnline() {
+        }
+        else {
+            console.log('Correct');
+            checkWebsiteExists_andOnline();
+
+        }
+    }
+    catch (err) {
+        console.error('', err)
+        return;
+
+    }
+
+}
+
+async function checkWebsiteExists_andOnline() {
     try {
         let websiteResponse = await fetch(link)
         console.log(websiteResponse)
 
-        if (website.status == '200') {
+        if (websiteResponse.status == '200') {
             website.online = true;
+            linkFormattingAndipAdress();
         }
         else {
-            throw new Error("Website access Unauthorized/offline")
+            throw new Error("Website access Unauthorized/Does not exist")
         }
 
     }
     catch (err) {
-        console.log('Error', err)
+        console.log('', err)
+        return;
 
     }
 
@@ -50,9 +77,8 @@ async function websiteExists_andOnline() {
 
 async function linkFormattingAndipAdress() {
     try {
-        let strippedLink = URL.parse(link)
-        console.log(strippedLink)
-        const result = await dns.lookup()
+
+        // const result = await dns.lookup()
 
     }
     catch (err) {
@@ -63,11 +89,11 @@ async function linkFormattingAndipAdress() {
 
 }
 
-websiteExists_andOnline();
 
 
 
 
+//websiteExists_andOnline()
 
 
 
