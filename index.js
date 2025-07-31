@@ -2,6 +2,8 @@ const { URL } = require('url');
 const http = require('http');
 const { error } = require('console');
 const dns = require('dns').promises;
+const puppeterr = require("puppeteer");
+const cheerio = require('cheerio')
 
 const website = {
     name: "",
@@ -10,14 +12,15 @@ const website = {
     location: "",
     favicon_url: "",
     online: false,
-    tld: "", // Top-Level Domain Last parr of it
+    tld: "", // Top-Level Domain Last part of it
     secure: false,
     techstack: [],
     colorScheme: [],
     fonts: [],
     contactName: " ",
     contactAdress: "",
-    fullLink: ""
+    fullLink: "",
+    hostingProvider: []
 
 }
 
@@ -56,7 +59,7 @@ async function LinkValidation_LinkParsing() {
 async function checkWebsiteExists_andOnline() {
     let websiteResponse
     try {
-        websiteResponse = await fetch(link)
+        websiteResponse = await fetch(link) // checking if the website is online 
         console.log(websiteResponse)
 
         if (websiteResponse.status == '200') {
@@ -77,8 +80,7 @@ async function checkWebsiteExists_andOnline() {
 
 async function checkWebsiteSecurityAndipAdress() {
     try {
-
-        const result = await dns.lookup(link)
+        const result = await dns.lookup(link) // taking ip adresss of domain name
         website.ip_adress = result.address;
 
         // API call to find ip location https://ipwhois.io
@@ -87,18 +89,50 @@ async function checkWebsiteSecurityAndipAdress() {
         const response = await (data.json())
         website.location = response.country
         */
+        websiteHostingCheck();
 
         console.log(website.ip_adress)
         website.secure = (strippedLink.protocol == "https:") ? website.secure = true : website.secure = false;
+
+
 
     }
     catch (err) {
 
         console.error('ERROR ', err)
         website.ip_adress = "not found"
+        websiteHostingCheck();
 
     }
+}
 
+async function websiteHostingCheck() {
+    try {
+        const browser = await puppeterr.launch({
+            headless: false,
+            defaultViewports: { width: 1390, height: 844 }
+
+        });
+
+        const page = await browser.newPage();
+        page.setDefaultNavigationTimeout(0.5 * 60 * 1000)
+        await page.goto("https://hostingchecker.com")
+        await page.locator('input').fill('https://bluemodoro.vercel.app')
+        await page.locator('input.pingsubmit').click();
+        const textSelector = await page.waitForSelector(
+            'div.hcresults > p > b',
+        )
+        const fullTitle = await textSelector?.evaluate(el => el.textContent);
+        console.log(fullTitle)
+        website.hostingProvider.push(fullTitle)
+        await browser.close();
+
+    }
+    catch (err) {
+
+        console.error('', err)
+
+    }
 
 }
 
@@ -120,19 +154,3 @@ async function checkWebsiteSecurityAndipAdress() {
 
 
 
-
-/*
-
-
-
-// Look up a domain name
-dns.lookup('hahahahahhaaaaa.com', (err, address, family) => {
-    if (err) {
-        console.error('Lookup error:', err);
-        return;
-    }
-    console.log(`IP address: ${address}`);
-    console.log(`IP version: IPv${family}`);
-});
-
-*/
