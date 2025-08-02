@@ -97,4 +97,27 @@ async function getDescription_title_favicon() {
     }
 }
 
-getDescription_title_favicon()
+
+async function checkWebsiteExists_andOnline() {
+    let websiteResponse
+    try {
+        websiteResponse = await fetch("https://cloudconvert.com/apis/html-to-pdf") // checking if the website is online 
+        console.log(websiteResponse)
+
+        if (websiteResponse.status == '200') {
+            website.online = true;
+
+        }
+        else {
+            throw new Error()
+        }
+    }
+    catch (err) {
+        console.log("Website " + websiteResponse.statusText)
+        return;
+
+    }
+
+}
+
+checkWebsiteExists_andOnline()

@@ -2,7 +2,7 @@ const { URL } = require('url');
 const http = require('http');
 const { error } = require('console');
 const dns = require('dns').promises;
-const puppeterr = require("puppeteer");
+const puppeteer = require("puppeteer");
 const cheerio = require('cheerio')
 
 const website = {
@@ -12,6 +12,7 @@ const website = {
     ip_adress: "",
     location: "",
     favicon_url: "",
+    css_url: "",
     online: false,
     tld: "", // Top-Level Domain Last part of it
     secure: false,
@@ -27,7 +28,7 @@ const website = {
 
 
 
-let link = "https://bluemodoro.vercel.app/hello";
+let link = "https://flexboxfroggy.com";
 let strippedLink;
 LinkValidation_LinkParsing();
 
@@ -88,7 +89,8 @@ async function checkWebsiteExists_andOnline() {
 
 async function checkWebsiteSecurityAndipAdress() {
     try {
-        const result = await dns.lookup(link) // taking ip adresss of domain name
+        console.log("Here")
+        const result = await dns.lookup(website.name) // taking ip adresss of domain name
         website.ip_adress = result.address;
 
         // API call to find ip location https://ipwhois.io
@@ -101,23 +103,27 @@ async function checkWebsiteSecurityAndipAdress() {
 
         console.log(website.ip_adress)
         website.secure = (strippedLink.protocol == "https:") ? website.secure = true : website.secure = false;
-        // websiteHostingCheck();
+        websiteHostingCheck();
 
 
     }
     catch (err) {
 
-        console.error('ERROR ', err)
+        console.error('ERROR', err)
         website.ip_adress = "not found"
-        //   websiteHostingCheck();
+        websiteHostingCheck();
 
     }
 }
 
 async function websiteHostingCheck() {
+    getDescription_title_favicon();
+    return;
     try {
-        const browser = await puppeterr.launch({
-            headless: false,
+
+
+        const browser = await puppeteer.launch({
+            headless: true,
             defaultViewports: { width: 1390, height: 844 }
 
         });
@@ -125,7 +131,7 @@ async function websiteHostingCheck() {
         const page = await browser.newPage();
         page.setDefaultNavigationTimeout(0.5 * 60 * 1000)
         await page.goto("https://hostingchecker.com")
-        await page.locator('input').fill('https://bluemodoro.vercel.app')
+        await page.locator('input').fill(link)
         await page.locator('input.pingsubmit').click();
         const textSelector = await page.waitForSelector(
             'div.hcresults > p > b',
@@ -163,12 +169,12 @@ async function getDescription_title_favicon() {
 
 
         const page = await browser.newPage();
-        page.setDefaultNavigationTimeout(0.5 * 60 * 1000)
-        await page.goto("https://cheerio.js.org")
+        page.setDefaultNavigationTimeout(3 * 60 * 1000)
+        await page.goto(link)
 
         const title = await page.title();
-        //website.title = title || "N/A";
-        console.log(title)
+        website.title = title || "N/A";
+
 
 
         const description = await page.evaluate(() => {
@@ -180,6 +186,8 @@ async function getDescription_title_favicon() {
                 return "N/A";
             }
         });
+
+        website.description = description;
 
         const favicon_url = await page.evaluate(() => {
 
@@ -195,13 +203,39 @@ async function getDescription_title_favicon() {
                 return "N/A"
             }
         })
+        website.favicon_url = favicon_url
+
+
+        const css_url = await page.evaluate(() => {
+            const links = document.querySelectorAll('link')
+            const styleSheet = Array.from(links).find((s) => {
+
+                return s.getAttribute('rel') === 'stylesheet'
+
+            })
+            if (styleSheet) {
+                return styleSheet.getAttribute('href')
+            } else {
+                return "N/A"
+            }
+        })
+
+        website.css_url = css_url
+
+
 
         console.log(description)
         console.log(favicon_url)
+        console.log(css_url)
+        detectFrameworks_takePictures()
     }
 
 
     catch (err) {
+        website.css_url = "N/A"
+        console.error('', err)
+
+        detectFrameworks_takePictures()
 
 
 
@@ -209,6 +243,54 @@ async function getDescription_title_favicon() {
 
     }
 }
+
+async function detectFrameworks_takePictures() {
+
+    try {
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            // defaultViewport: { width: 1390, height: 844 }
+
+        });
+
+
+        const page = await browser.newPage();
+        const page2 = await browser.newPage() // open for laptop screen
+
+        await page.setViewport({ width: 393, height: 852 })
+        await page2.setViewport({ width: 1280, height: 832 })
+
+
+        page.setDefaultNavigationTimeout(3 * 60 * 1000)
+        page2.setDefaultNavigationTimeout(3 * 60 * 1000)
+        await page.goto(link, { waitUntil: 'domcontentloaded' })
+        await page2.goto(link, { waitUntil: 'domcontentloaded' })
+        await page.screenshot({
+
+            path: `${website.name}_mobileView.png`,
+            fullPage: true
+        })
+        await page2.screenshot({ path: `${website.name}_LaptopView.png`, fullPage: true })
+
+        await browser.close();
+
+
+
+
+    }
+    catch {
+
+
+
+    }
+
+
+
+
+
+}
+
 
 
 
