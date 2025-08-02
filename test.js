@@ -2,6 +2,9 @@ const { error } = require('console');
 
 const cheerio = require('cheerio');
 const puppeteer = require("puppeteer");
+const OpenAI = require("openai")
+
+
 
 
 async function getWebsiteDescription_contactInfo_favicon() {
@@ -120,4 +123,5 @@ async function checkWebsiteExists_andOnline() {
 
 }
 
-checkWebsiteExists_andOnline()
+//checkWebsiteExists_andOnline()
+

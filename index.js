@@ -4,6 +4,15 @@ const { error } = require('console');
 const dns = require('dns').promises;
 const puppeteer = require("puppeteer");
 const cheerio = require('cheerio')
+const OpenAI = require("openai")
+
+const openai = new OpenAI({
+
+    apiKey: process.env.API_KEY
+
+});
+
+
 
 const website = {
     name: "",
@@ -30,7 +39,8 @@ const website = {
 
 let link = "https://flexboxfroggy.com";
 let strippedLink;
-LinkValidation_LinkParsing();
+//LinkValidation_LinkParsing();
+detectFrameworks_takePictures()
 
 async function LinkValidation_LinkParsing() {
     try {
@@ -273,17 +283,64 @@ async function detectFrameworks_takePictures() {
         })
         await page2.screenshot({ path: `${website.name}_LaptopView.png`, fullPage: true })
 
+        const allScriptTexts = await page.evaluate(() => {
+
+            const linksContent = document.querySelectorAll('script')
+            const scriptSources = Array.from(linksContent).map((s) => {
+
+                const link = s.getAttribute('src')
+
+                if (link !== null && link.startsWith('js')) {
+                    return link
+                }
+                else {
+                    return null
+                }
+            }).filter(Boolean)
+
+            return scriptSources;
+
+
+        })
+        console.log(allScriptTexts)
+
+
+
+
+
         await browser.close();
-
-
-
 
     }
     catch {
 
 
+        console.error('ERROR', err)
+
 
     }
+
+}
+
+async function AIoverview() {
+
+    try {
+        const response = await openai.responses.create({
+            model: "gpt-4o-mini",
+            input: "This is a test return 3",
+            store: true,
+        });
+
+        const result = await response.output_text
+        console.log(result)
+
+
+    }
+    catch (err) {
+
+        console.error('', err)
+    }
+
+
 
 
 
