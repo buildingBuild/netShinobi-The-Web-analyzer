@@ -4,7 +4,8 @@ const { error } = require('console');
 const dns = require('dns').promises;
 const puppeteer = require("puppeteer");
 const cheerio = require('cheerio')
-const OpenAI = require("openai")
+const OpenAI = require("openai");
+const { json } = require('express');
 
 const openai = new OpenAI({
 
@@ -26,6 +27,7 @@ const website = {
     tld: "", // Top-Level Domain Last part of it
     secure: false,
     techstack: [],
+    back_end_stack: [],
     colorScheme: [],
     fonts: [],
     contactName: " ",
@@ -264,6 +266,15 @@ async function detectFrameworks_takePictures() {
     const $ = await cheerio.load(websiteData);
 
 
+
+    let cookies = response.headers.get('set-cookie') // to detect backend frameworks
+    // this is the response data that hints at backends
+
+
+
+
+
+
     const websiteContinua = websiteData.replace(/\s/g, "") // Global DOM string 
 
 
@@ -310,7 +321,7 @@ async function detectFrameworks_takePictures() {
         // Detecting CSS Frameworks , Tailwind & Bootstrap & Bulma
 
         let tailwind_exist = false;
-        console.log(websiteContinua)
+        // console.log(websiteContinua)
 
         let tailwindCounter = 0;
         const tailwindHints = ["flex", "hidden", "mt-", "text-", "bg-", "w-full", "h-screen", "mt-", "mb-", "p-", "gap-4"];
@@ -343,7 +354,7 @@ async function detectFrameworks_takePictures() {
             console.log("Bulma Detected ")
         }
 
-        // Detecting JS frameworks
+        // Detecting JS Front-end frameworks
 
 
         let nextJs_exists = false;
@@ -397,6 +408,35 @@ async function detectFrameworks_takePictures() {
             console.log("Vue Detected")
             website.techstack.push("Vue.js")
 
+        }
+
+
+        // Detecting Back-end Frameworks
+
+
+        if (cookies.includes("laravel_session") || cookies.includes("XSRF-TOKEN")) {
+            website.back_end_stack.push("laravel")
+            console.log("LARAVEL DETECTED")
+        }
+
+        if (cookies.includes("sessionid") || cookies.includes("csrftoken")) {
+            website.back_end_stack.push("Django")
+            console.log("DJANGO DETECTED")
+        }
+
+        if (cookies.includes("express.sid") || cookies.includes("connect.sid")) {
+            website.back_end_stack.push("Express")
+            console.log("EXPRESS DETECTED")
+        }
+
+        if (cookies.includes("JSESSIONID")) {
+            website.back_end_stack.push("Spring")
+            console.log("SPRING DETECTED")
+        }
+
+        if (cookies.includes("ASP.NET")) {
+            website.back_end_stack.push("Asp.net")
+            console.log("ASP.NET DETECTED")
         }
 
 
