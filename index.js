@@ -14,38 +14,6 @@ const openai = new OpenAI({
 
 });
 
-const designElements = {
-    "fonts": [
-        "Inter",
-        "Arial",
-        "Roboto",
-        "Helvetica Neue",
-        "Source Sans Pro"
-    ],
-    "colors": [
-        {
-            "name": "Dark Charcoal",
-            "hex": "#20242A"
-        },
-        {
-            "name": "Spring Green",
-            "hex": "#68A063"
-        },
-        {
-            "name": "White",
-            "hex": "#FFFFFF"
-        },
-        {
-            "name": "Light Gray",
-            "hex": "#A0A7B4"
-        },
-        {
-            "name": "Medium Gray",
-            "hex": "#595F6B"
-        }
-    ]
-}
-
 
 const website = {
     name: "",
@@ -65,17 +33,17 @@ const website = {
     contactName: " ",
     contactAdress: "",
     fullLink: "",
-    hostingProvider: []
+    hostingProvider: [],
+    AI_Overview: ""
 
 }
 
 
 
-let link = "https://start.spring.io";
+let link = "https://medium.com";
 let strippedLink;
-//LinkValidation_LinkParsing();
-//detectFrameworks_takePictures()
-//getKeyFonts()
+LinkValidation_LinkParsing();
+
 
 async function LinkValidation_LinkParsing() {
     try {
@@ -139,11 +107,11 @@ async function checkWebsiteSecurityAndipAdress() {
         website.ip_adress = result.address;
 
         // API call to find ip location https://ipwhois.io
-        /*
+
         const data = await fetch(`http://ipwho.is/${website.ip_adress}`)
         const response = await (data.json())
         website.location = response.country
-        */
+
 
 
         console.log(website.ip_adress)
@@ -162,8 +130,7 @@ async function checkWebsiteSecurityAndipAdress() {
 }
 
 async function websiteHostingCheck() {
-    getDescription_title_favicon();
-    return;
+
     try {
 
 
@@ -474,7 +441,7 @@ async function detectFrameworks_takePictures() {
         }
 
         await browser.close();
-        console.log(cookies)
+        getDesignElements();
 
 
 
@@ -486,6 +453,7 @@ async function detectFrameworks_takePictures() {
     catch (errr) {
         console.error('', err)
         await browser.close();
+        getDesignElements();
 
     }
 
@@ -493,72 +461,97 @@ async function detectFrameworks_takePictures() {
 
 }
 
-async function getKeyFonts() {
+async function getDesignElements() {
 
     try {
-
-        let imageAsBase64 = fs.readFileSync('_LaptopView.png', 'base64');
-        // console.log(imageAsBase64)
-
-
-        /*
-        const response = await openai.responses.create({
-            model: "gpt-4.1-mini",
-            input: [
-                {
-                    role: "user",
-                    content: [
-                        {
-                            type: "input_text",
-                            text: "Identify 3-5 key fonts in the image and list the major color scheme color code and name Return as JSON string. It should always be font and colors as one of the object names"
-
-                        },
-                        {
-                            type: "input_image",
-                            image_url: `data:image/jpeg;base64,${imageAsBase64}`,
-                        },
-                    ],
-                },
-            ],
-        });
-        console.log(response.output_text)
+        if (fs.existsSync(`${website.name}_LaptopView.png`)) {
+            console.log('FILE EXISTS')
 
 
-*/
+            let imageAsBase64 = fs.readFileSync(`${website.name}_LaptopView.png`, 'base64');
 
 
+
+
+            const response = await openai.responses.create({
+                model: "gpt-4.1-mini",
+                input: [
+                    {
+                        role: "user",
+                        content: [
+                            {
+                                type: "input_text",
+                                text: "Identify 3-5 key fonts used in the image. Also extract the main color scheme, listing each color with both its name. Return a raw JSON string only—no backticks, formatting, or extra explanation. Use the keys fonts and colors."
+
+                            },
+                            {
+                                type: "input_image",
+                                image_url: `data:image/jpeg;base64,${imageAsBase64}`,
+                            },
+                        ],
+                    },
+                ],
+            });
+
+            console.log(response.output_text)
+
+            const designElements = await JSON.parse(response.output_text)
+
+
+            await designElements.fonts.forEach((s) => {
+                s = String(s);
+                if (s !== "undefined") {
+                    website.fonts.push(s)
+                }
+            })
+
+            await designElements.colors.forEach((s) => {
+                s = String(s);
+                if (s !== "undefined") {
+                    website.colorScheme.push(s.name)
+                }
+            })
+        }
+
+        AIoverview()
     }
     catch (err) {
         console.error('', err)
+        AIoverview()
     }
 
-
-
-
-
-
 }
-
-
 
 async function AIoverview() {
 
-    try {
-        const response = await openai.responses.create({
-            model: "gpt-4o-mini",
-            input: "This is a test return 3",
-            store: true,
-        });
 
-        const result = await response.output_text
-        console.log(result)
-
-
-    }
-    catch (err) {
-
-        console.error('', err)
+    const subWebsite = {
+        name: website.name,
+        ip_location: website.ip_location,
+        top_level_domain: website.top_level_domain,
+        colorScheme: website.colorScheme,
+        techstack: website.techstack
     }
 
+    console.log(website)
 
+    /*
+        try {
+            const response = await openai.responses.create({
+                model: "gpt-4o-mini",
+                input: "You need to return a summary of the website object I give you.",
+                store: true,
+            });
+    
+            const result = await response.output_text
+            console.log(result)
+    
+    
+        }
+        catch (err) {
+    
+            console.error('', err)
+        }
+    
+    */
 }
