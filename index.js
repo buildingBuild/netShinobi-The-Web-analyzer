@@ -6,6 +6,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require('cheerio')
 const OpenAI = require("openai");
 const { json } = require('express');
+const fs = require('fs')
 
 const openai = new OpenAI({
 
@@ -13,6 +14,37 @@ const openai = new OpenAI({
 
 });
 
+const designElements = {
+    "fonts": [
+        "Inter",
+        "Arial",
+        "Roboto",
+        "Helvetica Neue",
+        "Source Sans Pro"
+    ],
+    "colors": [
+        {
+            "name": "Dark Charcoal",
+            "hex": "#20242A"
+        },
+        {
+            "name": "Spring Green",
+            "hex": "#68A063"
+        },
+        {
+            "name": "White",
+            "hex": "#FFFFFF"
+        },
+        {
+            "name": "Light Gray",
+            "hex": "#A0A7B4"
+        },
+        {
+            "name": "Medium Gray",
+            "hex": "#595F6B"
+        }
+    ]
+}
 
 
 const website = {
@@ -42,7 +74,8 @@ const website = {
 let link = "https://start.spring.io";
 let strippedLink;
 //LinkValidation_LinkParsing();
-detectFrameworks_takePictures()
+//detectFrameworks_takePictures()
+//getKeyFonts()
 
 async function LinkValidation_LinkParsing() {
     try {
@@ -440,6 +473,7 @@ async function detectFrameworks_takePictures() {
             console.log("ASP.NET DETECTED")
         }
 
+        await browser.close();
         console.log(cookies)
 
 
@@ -451,16 +485,47 @@ async function detectFrameworks_takePictures() {
     }
     catch (errr) {
         console.error('', err)
+        await browser.close();
 
     }
 
-    await browser.close();
+
 
 }
 
 async function getKeyFonts() {
 
     try {
+
+        let imageAsBase64 = fs.readFileSync('_LaptopView.png', 'base64');
+        // console.log(imageAsBase64)
+
+
+        /*
+        const response = await openai.responses.create({
+            model: "gpt-4.1-mini",
+            input: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "input_text",
+                            text: "Identify 3-5 key fonts in the image and list the major color scheme color code and name Return as JSON string. It should always be font and colors as one of the object names"
+
+                        },
+                        {
+                            type: "input_image",
+                            image_url: `data:image/jpeg;base64,${imageAsBase64}`,
+                        },
+                    ],
+                },
+            ],
+        });
+        console.log(response.output_text)
+
+
+*/
+
 
     }
     catch (err) {
