@@ -37,7 +37,7 @@ const website = {
 
 
 
-let link = "https://flexboxfroggy.com";
+let link = "https://tailwindcss.com";
 let strippedLink;
 //LinkValidation_LinkParsing();
 detectFrameworks_takePictures()
@@ -264,6 +264,9 @@ async function detectFrameworks_takePictures() {
     const $ = await cheerio.load(websiteData);
 
 
+    const websiteContinua = websiteData.replace(/\s/g, "") // Global DOM string 
+
+
 
     // Puppet Launch 
     const browser = await puppeteer.launch({
@@ -272,6 +275,8 @@ async function detectFrameworks_takePictures() {
     });
     let page = await browser.newPage();
     let page2 = await browser.newPage() // open for laptop screen
+
+
     try {
         // Taking Pictures of screen 
         await page.setViewport({ width: 393, height: 852 })
@@ -280,8 +285,15 @@ async function detectFrameworks_takePictures() {
 
         page.setDefaultNavigationTimeout(3 * 60 * 1000)
         page2.setDefaultNavigationTimeout(3 * 60 * 1000)
-        await page.goto(link, { waitUntil: 'domcontentloaded' })
-        await page2.goto(link, { waitUntil: 'domcontentloaded' })
+
+        await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115 Safari/537.36");
+        await page.setJavaScriptEnabled(true);
+        await page.goto(link, { waitUntil: "networkidle2" });
+
+        await page2.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115 Safari/537.36");
+        await page2.setJavaScriptEnabled(true);
+        await page2.goto(link, { waitUntil: "networkidle2" });
+
         await page.screenshot({
 
             path: `${website.name}_mobileView.png`,
@@ -289,14 +301,15 @@ async function detectFrameworks_takePictures() {
         })
         await page2.screenshot({ path: `${website.name}_LaptopView.png`, fullPage: true })
     }
-    catch {
+    catch (err) {
         console.error('ERROR', err)
     }
 
     try {
 
-        // Detecting CSS Frameworks , Tailwind & Bootstrap
-        const websiteContinua = websiteData.replace(/\s/g, "")
+        // Detecting CSS Frameworks , Tailwind & Bootstrap & Bulma
+
+        let tailwind_exist = false;
         console.log(websiteContinua)
 
         let tailwindCounter = 0;
@@ -308,10 +321,89 @@ async function detectFrameworks_takePictures() {
             }
         })
 
-        if (tailwindCounter >= 3) {
+        if (tailwindCounter >= 4) {
+            tailwind_exist = true;
+            website.techstack.push("tailwind.css")
             console.log("STRONG TAILWIND DETECTION ")
         }
         console.log(tailwindCounter)
+
+        let bootStrap_exists = false;
+        if (websiteContinua.includes("bootstrap")) {
+            bootStrap_exists = true;
+            website.techstack.push("Bootstrap.css")
+            console.log("BOOTSTRAP DETECTED ")
+        }
+
+
+        let bulma_exists = false;
+        if (websiteContinua.includes("bulma")) {
+            bulma_exists = true
+            website.techstack.push("Bulma.css")
+            console.log("Bulma Detected ")
+        }
+
+        // Detecting JS frameworks
+
+
+        let nextJs_exists = false;
+        let ReactJs_exists = false;
+
+        if (websiteContinua.includes("_next") || websiteContinua.includes("__next")) {
+            console.log("NEXTJS detected")
+            nextJs_exists = true;
+            ReactJs_exists = true;
+            website.techstack.push("Next.js")
+            website.techstack.push("React.js")
+        }
+
+
+
+        if (!ReactJs_exists) {
+            const ReactHints = ['id="root"', "data-reactroot"];
+            ReactHints.some((hint) => {
+                if (websiteContinua.includes(hint)) {
+                    ReactJs_exists = true;
+                    website.techstack.push("React.js")
+
+                }
+            })
+
+        }
+
+        let AngularJs_exists = false;
+        if (websiteContinua.includes("app-root") || websiteContinua.includes("ng-") || websiteContinua.includes("*ngIf")) {
+            AngularJs_exists = true;
+            website.techstack.push("Angular.js")
+        }
+
+        let svelte_exist = false;
+        if (websiteContinua.includes("Svelte")) {
+            svelte_exist = true;
+            website.techstack.push("svelte")
+            console.log("Svelete Detected")
+
+        }
+
+
+        let vueCounter = 0;
+        const vueJsHints = ["v-if", "v-for", "v-model", "v-bind", "v-on", "v-", "vue"]
+        vueJsHints.forEach((hint) => {
+            if (websiteContinua.includes(hint)) {
+                ++vueCounter;
+            }
+        })
+        if (vueCounter >= 2) {
+            console.log("Vue Detected")
+            website.techstack.push("Vue.js")
+
+        }
+
+
+
+
+
+
 
 
 
