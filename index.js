@@ -255,19 +255,25 @@ async function getDescription_title_favicon() {
 }
 
 async function detectFrameworks_takePictures() {
+    // Dangerous code here making multiple request that quickly could get it blocked
+    // Debug this section specifically in future if errors as such start to occur 
 
+    // Cheerio Launch
+    const response = await fetch(link)
+    const websiteData = await response.text();
+    const $ = await cheerio.load(websiteData);
+
+
+
+    // Puppet Launch 
+    const browser = await puppeteer.launch({
+        headless: true,
+
+    });
+    let page = await browser.newPage();
+    let page2 = await browser.newPage() // open for laptop screen
     try {
-
-        const browser = await puppeteer.launch({
-            headless: true,
-            // defaultViewport: { width: 1390, height: 844 }
-
-        });
-
-
-        const page = await browser.newPage();
-        const page2 = await browser.newPage() // open for laptop screen
-
+        // Taking Pictures of screen 
         await page.setViewport({ width: 393, height: 852 })
         await page2.setViewport({ width: 1280, height: 832 })
 
@@ -282,8 +288,45 @@ async function detectFrameworks_takePictures() {
             fullPage: true
         })
         await page2.screenshot({ path: `${website.name}_LaptopView.png`, fullPage: true })
+    }
+    catch {
+        console.error('ERROR', err)
+    }
 
-        const allScriptTexts = await page.evaluate(() => {
+    try {
+
+        // Detecting CSS Frameworks , Tailwind & Bootstrap
+        const websiteContinua = websiteData.replace(/\s/g, "")
+        console.log(websiteContinua)
+
+        let tailwindCounter = 0;
+        const tailwindHints = ["flex", "hidden", "mt-", "text-", "bg-", "w-full", "h-screen", "mt-", "mb-", "p-", "gap-4"];
+
+        tailwindHints.forEach((hint) => {
+            if (websiteContinua.includes(hint)) {
+                ++tailwindCounter;
+            }
+        })
+
+        if (tailwindCounter >= 3) {
+            console.log("STRONG TAILWIND DETECTION ")
+        }
+        console.log(tailwindCounter)
+
+
+
+    }
+    catch (errr) {
+
+    }
+
+    await browser.close();
+
+}
+/*
+
+
+ const allScriptTexts = await page.evaluate(() => {
 
             const linksContent = document.querySelectorAll('script')
             const scriptSources = Array.from(linksContent).map((s) => {
@@ -305,21 +348,23 @@ async function detectFrameworks_takePictures() {
         console.log(allScriptTexts)
 
 
+        */
 
 
+/*
+let tailwind_exist = false;
+const allScriptTexts = await page.evaluate(() => {
+   const linksContent = document.querySelectorAll('script')
+   const scriptSources = Array.from(linksContent).some((s) => {
+       const link = s.getAttribute('src')
+       if (link !== null && link.startsWith('https://cdn.tailwindcss.com')) {
+           tailwind_exist = true
+       }
+   })
+   return scriptSources;
+})
+*/
 
-        await browser.close();
-
-    }
-    catch {
-
-
-        console.error('ERROR', err)
-
-
-    }
-
-}
 
 async function AIoverview() {
 
@@ -341,26 +386,4 @@ async function AIoverview() {
     }
 
 
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
