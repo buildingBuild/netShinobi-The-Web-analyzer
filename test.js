@@ -121,3 +121,44 @@ async function checkWebsiteExists_andOnline() {
 
 checkWebsiteExists_andOnline()
 
+/*
+
+
+ const allScriptTexts = await page.evaluate(() => {
+
+            const linksContent = document.querySelectorAll('script')
+            const scriptSources = Array.from(linksContent).map((s) => {
+
+                const link = s.getAttribute('src')
+
+                if (link !== null && link.startsWith('js')) {
+                    return link
+                }
+                else {
+                    return null
+                }
+            }).filter(Boolean)
+
+            return scriptSources;
+
+
+        })
+        console.log(allScriptTexts)
+
+
+        */
+
+
+/*
+let tailwind_exist = false;
+const allScriptTexts = await page.evaluate(() => {
+   const linksContent = document.querySelectorAll('script')
+   const scriptSources = Array.from(linksContent).some((s) => {
+       const link = s.getAttribute('src')
+       if (link !== null && link.startsWith('https://cdn.tailwindcss.com')) {
+           tailwind_exist = true
+       }
+   })
+   return scriptSources;
+})
+*/

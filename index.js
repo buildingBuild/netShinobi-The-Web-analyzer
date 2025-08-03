@@ -39,7 +39,7 @@ const website = {
 
 
 
-let link = "https://tailwindcss.com";
+let link = "https://start.spring.io";
 let strippedLink;
 //LinkValidation_LinkParsing();
 detectFrameworks_takePictures()
@@ -337,7 +337,6 @@ async function detectFrameworks_takePictures() {
             website.techstack.push("tailwind.css")
             console.log("STRONG TAILWIND DETECTION ")
         }
-        console.log(tailwindCounter)
 
         let bootStrap_exists = false;
         if (websiteContinua.includes("bootstrap")) {
@@ -362,6 +361,7 @@ async function detectFrameworks_takePictures() {
 
         if (websiteContinua.includes("_next") || websiteContinua.includes("__next")) {
             console.log("NEXTJS detected")
+            console.log("REACTJS detected")
             nextJs_exists = true;
             ReactJs_exists = true;
             website.techstack.push("Next.js")
@@ -376,7 +376,7 @@ async function detectFrameworks_takePictures() {
                 if (websiteContinua.includes(hint)) {
                     ReactJs_exists = true;
                     website.techstack.push("React.js")
-
+                    console.log("React Detected")
                 }
             })
 
@@ -386,6 +386,7 @@ async function detectFrameworks_takePictures() {
         if (websiteContinua.includes("app-root") || websiteContinua.includes("ng-") || websiteContinua.includes("*ngIf")) {
             AngularJs_exists = true;
             website.techstack.push("Angular.js")
+            console.log("Angular Detected")
         }
 
         let svelte_exist = false;
@@ -429,7 +430,7 @@ async function detectFrameworks_takePictures() {
             console.log("EXPRESS DETECTED")
         }
 
-        if (cookies.includes("JSESSIONID")) {
+        if (cookies.includes("JSESSIONID") || cookies.includes("spring")) {
             website.back_end_stack.push("Spring")
             console.log("SPRING DETECTED")
         }
@@ -439,7 +440,7 @@ async function detectFrameworks_takePictures() {
             console.log("ASP.NET DETECTED")
         }
 
-
+        console.log(cookies)
 
 
 
@@ -449,53 +450,30 @@ async function detectFrameworks_takePictures() {
 
     }
     catch (errr) {
+        console.error('', err)
 
     }
 
     await browser.close();
 
 }
-/*
+
+async function getKeyFonts() {
+
+    try {
+
+    }
+    catch (err) {
+        console.error('', err)
+    }
 
 
- const allScriptTexts = await page.evaluate(() => {
-
-            const linksContent = document.querySelectorAll('script')
-            const scriptSources = Array.from(linksContent).map((s) => {
-
-                const link = s.getAttribute('src')
-
-                if (link !== null && link.startsWith('js')) {
-                    return link
-                }
-                else {
-                    return null
-                }
-            }).filter(Boolean)
-
-            return scriptSources;
 
 
-        })
-        console.log(allScriptTexts)
 
 
-        */
+}
 
-
-/*
-let tailwind_exist = false;
-const allScriptTexts = await page.evaluate(() => {
-   const linksContent = document.querySelectorAll('script')
-   const scriptSources = Array.from(linksContent).some((s) => {
-       const link = s.getAttribute('src')
-       if (link !== null && link.startsWith('https://cdn.tailwindcss.com')) {
-           tailwind_exist = true
-       }
-   })
-   return scriptSources;
-})
-*/
 
 
 async function AIoverview() {
