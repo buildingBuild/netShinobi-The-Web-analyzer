@@ -5,6 +5,10 @@ const puppeteer = require("puppeteer");
 const OpenAI = require("openai")
 
 
+//connection string
+const connectionString = process.env.DATABASE_STRING;
+
+
 
 
 async function getWebsiteDescription_contactInfo_favicon() {

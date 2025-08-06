@@ -7,13 +7,16 @@ const cheerio = require('cheerio')
 const OpenAI = require("openai");
 const { json } = require('express');
 const fs = require('fs')
+const mongoose = require('mongoose')
+const Web = require('./website.js')
+const connectionString = process.env.DATABASE_STRING;
+
 
 const openai = new OpenAI({
 
     apiKey: process.env.API_KEY
 
 });
-
 
 const website = {
     name: "",
@@ -42,7 +45,11 @@ const website = {
 
 let link = "https://medium.com";
 let strippedLink;
-LinkValidation_LinkParsing();
+//LinkValidation_LinkParsing();
+connectToDatabase()
+
+
+
 
 
 async function LinkValidation_LinkParsing() {
@@ -82,7 +89,6 @@ async function checkWebsiteExists_andOnline() {
     let websiteResponse
     try {
         websiteResponse = await fetch(link) // checking if the website is online 
-        console.log(websiteResponse)
 
         if (websiteResponse.status == '200') {
             website.online = true;
@@ -114,7 +120,7 @@ async function checkWebsiteSecurityAndipAdress() {
 
 
 
-        console.log(website.ip_adress)
+        // console.log(website.ip_adress)
         website.secure = (strippedLink.protocol == "https:") ? website.secure = true : website.secure = false;
         websiteHostingCheck();
 
@@ -383,7 +389,7 @@ async function detectFrameworks_takePictures() {
         }
 
         let AngularJs_exists = false;
-        if (websiteContinua.includes("app-root") || websiteContinua.includes("ng-") || websiteContinua.includes("*ngIf")) {
+        if (websiteContinua.includes("ng-") || websiteContinua.includes("*ngIf")) {
             AngularJs_exists = true;
             website.techstack.push("Angular.js")
             console.log("Angular Detected")
@@ -481,7 +487,7 @@ async function getDesignElements() {
                         content: [
                             {
                                 type: "input_text",
-                                text: "Identify 3-5 key fonts used in the image. Also extract the main color scheme, listing each color with both its name. Return a raw JSON string only—no backticks, formatting, or extra explanation. Use the keys fonts and colors."
+                                text: "Identify 3-5 key fonts used in the image. Also extract the main color scheme, listing each color with both its name. Return a raw JSON string only—no backticks, formatting, or extra explanation. Use the keys fonts and colors. The object colors should have keys of name and code"
 
                             },
                             {
@@ -498,17 +504,19 @@ async function getDesignElements() {
             const designElements = await JSON.parse(response.output_text)
 
 
-            await designElements.fonts.forEach((s) => {
+            designElements.fonts.forEach((s) => {
                 s = String(s);
                 if (s !== "undefined") {
                     website.fonts.push(s)
                 }
             })
 
-            await designElements.colors.forEach((s) => {
-                s = String(s);
-                if (s !== "undefined") {
-                    website.colorScheme.push(s.name)
+            designElements.colors.forEach((s) => {
+                if (s && s.name && s.code) {
+                    website.colorScheme.push({
+                        name: s.name,
+                        code: s.code
+                    });
                 }
             })
         }
@@ -527,31 +535,43 @@ async function AIoverview() {
 
     const subWebsite = {
         name: website.name,
+        description: website.description,
         ip_location: website.ip_location,
-        top_level_domain: website.top_level_domain,
-        colorScheme: website.colorScheme,
+        top_level_domain: website.tld,
         techstack: website.techstack
     }
 
-    console.log(website)
+    // console.log(subWebsite)
 
-    /*
-        try {
-            const response = await openai.responses.create({
-                model: "gpt-4o-mini",
-                input: "You need to return a summary of the website object I give you.",
-                store: true,
-            });
-    
-            const result = await response.output_text
-            console.log(result)
-    
-    
-        }
-        catch (err) {
-    
-            console.error('', err)
-        }
-    
-    */
+
+    try {
+        const response = await openai.responses.create({
+            model: "gpt-4o-mini",
+            input: `Return a concise summary of the website object make it friendly  e.g ___ is a commercial site hosted in the United States. It's built with Node.js, Express, and MongoDB. ${JSON.stringify(subWebsite)}`,
+            store: true,
+        });
+
+        const result = await response.output_text
+        console.log(result)
+
+
+    }
+    catch (err) {
+
+        console.error('', err)
+    }
+
+
+}
+
+async function connectToDatabase() {
+    try {
+        const result = await mongoose.connect(connectionString)
+        console.log("Connected to database")
+    }
+    catch (err) {
+        console.error('THERE IS BIG ERROR', err)
+    }
+
+
 }
