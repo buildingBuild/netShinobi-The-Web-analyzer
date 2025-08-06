@@ -45,11 +45,8 @@ const website = {
 
 let link = "https://medium.com";
 let strippedLink;
-//LinkValidation_LinkParsing();
-connectToDatabase()
-
-
-
+connectToDatabase();
+LinkValidation_LinkParsing();
 
 
 async function LinkValidation_LinkParsing() {
@@ -521,20 +518,21 @@ async function getDesignElements() {
             })
         }
 
-        AIoverview()
+        AIoverview_saveToDataBase();
     }
     catch (err) {
         console.error('', err)
-        AIoverview()
+        AIoverview_saveToDataBase();
     }
 
 }
 
-async function AIoverview() {
+async function AIoverview_saveToDataBase() {
 
 
     const subWebsite = {
         name: website.name,
+        title: website.title,
         description: website.description,
         ip_location: website.ip_location,
         top_level_domain: website.tld,
@@ -547,12 +545,13 @@ async function AIoverview() {
     try {
         const response = await openai.responses.create({
             model: "gpt-4o-mini",
-            input: `Return a concise summary of the website object make it friendly  e.g ___ is a commercial site hosted in the United States. It's built with Node.js, Express, and MongoDB. ${JSON.stringify(subWebsite)}`,
+            input: `Return a concise summary of the website object make it friendly. Take into consideration its tld  e.g ___ is a commercial site hosted in the United States. It's built with Node.js, Express, and MongoDB. ${JSON.stringify(subWebsite)}`,
             store: true,
         });
 
         const result = await response.output_text
         console.log(result)
+        website.AI_Overview = result
 
 
     }
@@ -562,12 +561,45 @@ async function AIoverview() {
     }
 
 
+    try {
+
+        const web = new Web({
+            name: website.name,
+            title: website.title,
+            description: website.description,
+            ip_adress: website.ip_adress,
+            location: website.location,
+            favicon_url: website.favicon_url,
+            css_url: website.css_url,
+            online: website.online,
+            tld: website.tld,
+            secure: website.secure,
+            techstack: website.techstack,
+            back_end_stack: website.back_end_stack,
+            colorScheme: website.colorScheme,
+            fonts: website.fonts,
+            contactName: website.contactName,
+            contactAdress: website.contactAdress,
+            fullLink: website.fullLink,
+            hostingProvider: website.hostingProvider,
+            AI_Overview: website.AI_Overview
+        });
+        const result = await web.save();
+        console.log(result)
+
+        console.log("I have finished")
+
+
+    } catch (err) {
+        console.error('err', err)
+    }
+
+
 }
 
 async function connectToDatabase() {
     try {
         const result = await mongoose.connect(connectionString)
-        console.log("Connected to database")
     }
     catch (err) {
         console.error('THERE IS BIG ERROR', err)

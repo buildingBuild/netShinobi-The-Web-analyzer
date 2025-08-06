@@ -14,7 +14,10 @@ const websiteSchema = new Schema({
     secure: { type: Boolean, default: false },
     techstack: [String],
     back_end_stack: [String],
-    colorScheme: [String],
+    colorScheme: [{
+        name: String,
+        code: String
+    }],
     fonts: [String],
     contactName: String,
     contactAdress: String,
@@ -23,5 +26,5 @@ const websiteSchema = new Schema({
     AI_Overview: String
 }, { timestamps: true });
 
-const Web = mongoose.model('Web', websiteSchema)
+const Web = mongoose.model('Web', websiteSchema, 'Web')
 module.exports = Web
