@@ -4,10 +4,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>netShinobi - Web Information delivered the shinobi way</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <title>NetShinobi- The web Analyzer</title>
+
+
+    <style>
+        body {
+            background-image: url('/img_icons/createBG.svg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0px;
+
+        }
+
+        .header-nav {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-right: 10px;
+            color: white;
+
+            font-family: sans-serif;
+        }
+
+        .header-nav p {
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 2px;
+        }
+
+        .selling-point {
+            text-align: center;
+            position: relative;
+        }
+
+        .selling-point h1 {
+            font-family: "Montserrat", sans-serif;
+            letter-spacing: 3px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0px;
+
+        }
+
+        .selling-point h3 {
+            font-family: "Montserrat", sans-serif;
+            color: white;
+            font-weight: 400;
+        }
+
+        .container hr {
+            margin-top: 0px;
+            width: 100%;
+            color: white;
+            opacity: 0.5;
+        }
+
+        .selling-point input {
+            height: 30px;
+            width: 90%;
+            font-size: 20px;
+            padding: 4px;
+            border-radius: 7px;
+            font-family: "Montserrat", sans-serif;
+
+        }
+
+        .selling-point h4 {
+            margin-top: 30px;
+            text-align: center;
+            margin-bottom: 7px;
+            color: white;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .selling-point img {
+            position: absolute;
+            width: 40px;
+            right: 10px;
+        }
+
+        .selling-point h5 {
+            margin-top: 5px;
+            color: red;
+            font-family: "Montserrat", sans-serif;
+            letter-spacing: 3px;
+        }
+
+        .web-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .web-info h1 {
+            font-family: "Montserrat", sans-serif;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container">
+        <div class="header-nav">
+            <p>How It works</p>
+            <p>Report an Issue</p>
+        </div>
+        <hr>
+        <div class="selling-point">
+            <h1>NetShinobi</h1>
+            <h3> Uncover Tech stack, Design system, Hosting & More<br> All in One Scan. </h3>
+
+            <h4>Enter a Website to analyze</h4>
+            <input placeholder="https://example.com">
+            <img src="/img_icons/searcIcon.svg">
+            <h5>Check format</h5>
+        </div>
+        <hr>
+        <div class="web-info">
+            <h1>Spotify.com</h1>
+        </div>
+
+
+    </div>
+
+
+
+    </div>
 
 </body>
 
