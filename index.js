@@ -9,7 +9,31 @@ const { json } = require('express');
 const fs = require('fs')
 const mongoose = require('mongoose')
 const Web = require('./website.js')
+const express = require('express')
+const app = express();
+app.use(express.json());
+app.use(express.static('public'))
+app.listen(3000, () => console.log("Running"))
+
+
+let link = "";
+let strippedLink;
+
+
+
+app.post('/analyze', async (req, res) => {
+    try {
+        link = req.body.link
+        const frontEndData = await LinkValidation_LinkParsing();
+        res.json(website)
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+
+})
 const connectionString = process.env.DATABASE_STRING;
+
 
 
 const openai = new OpenAI({
@@ -43,16 +67,12 @@ const website = {
 
 
 
-let link = "https://medium.com";
-let strippedLink;
-connectToDatabase();
-LinkValidation_LinkParsing();
-
 
 async function LinkValidation_LinkParsing() {
+    connectToDatabase();
     try {
         strippedLink = new URL(link)
-        console.log(strippedLink)
+        // console.log(strippedLink)
         if (strippedLink == null) {
             throw new Error("Link not valid")
         }
@@ -62,7 +82,7 @@ async function LinkValidation_LinkParsing() {
 
         }
         else {
-            console.log('Correct');
+            // console.log('Correct');
             website.name = strippedLink.hostname
 
             let tld = strippedLink.host.slice(strippedLink.host.length - 4, strippedLink.host.length)
@@ -70,13 +90,14 @@ async function LinkValidation_LinkParsing() {
             website.fullLink = strippedLink.href
             // console.log("Host Name is: " + website.name)
 
-            checkWebsiteExists_andOnline();
+            await checkWebsiteExists_andOnline();
+            return website
 
         }
     }
     catch (err) {
-        console.error('', err)
-        return;
+        throw err
+        // return "Error " + err
 
     }
 
@@ -89,15 +110,16 @@ async function checkWebsiteExists_andOnline() {
 
         if (websiteResponse.status == '200') {
             website.online = true;
-            checkWebsiteSecurityAndipAdress();
+            await checkWebsiteSecurityAndipAdress();
         }
         else {
             throw new Error()
         }
     }
     catch (err) {
-        console.log("Website " + websiteResponse.statusText)
-        return;
+
+        throw err
+        //return "Website " + (websiteResponse?.statusText || "Error");
 
     }
 
@@ -119,7 +141,7 @@ async function checkWebsiteSecurityAndipAdress() {
 
         // console.log(website.ip_adress)
         website.secure = (strippedLink.protocol == "https:") ? website.secure = true : website.secure = false;
-        websiteHostingCheck();
+        await websiteHostingCheck();
 
 
     }
@@ -127,7 +149,7 @@ async function checkWebsiteSecurityAndipAdress() {
 
         console.error('ERROR', err)
         website.ip_adress = "not found"
-        websiteHostingCheck();
+        await websiteHostingCheck();
 
     }
 }
@@ -155,14 +177,14 @@ async function websiteHostingCheck() {
         console.log(fullTitle)
         website.hostingProvider.push(fullTitle)
         await browser.close();
-        getDescription_title_favicon();
+        await getDescription_title_favicon();
 
     }
     catch (err) {
 
         console.error('', err)
         website.hostingProvider.push("None Found");
-        getDescription_title_favicon();
+        await getDescription_title_favicon();
 
     }
 
@@ -242,7 +264,7 @@ async function getDescription_title_favicon() {
         console.log(description)
         console.log(favicon_url)
         console.log(css_url)
-        detectFrameworks_takePictures()
+        await detectFrameworks_takePictures()
     }
 
 
@@ -250,7 +272,7 @@ async function getDescription_title_favicon() {
         website.css_url = "N/A"
         console.error('', err)
 
-        detectFrameworks_takePictures()
+        await detectFrameworks_takePictures()
 
 
 
@@ -444,7 +466,7 @@ async function detectFrameworks_takePictures() {
         }
 
         await browser.close();
-        getDesignElements();
+        await getDesignElements();
 
 
 
@@ -453,10 +475,10 @@ async function detectFrameworks_takePictures() {
 
 
     }
-    catch (errr) {
+    catch (err) {
         console.error('', err)
         await browser.close();
-        getDesignElements();
+        await getDesignElements();
 
     }
 
@@ -518,11 +540,11 @@ async function getDesignElements() {
             })
         }
 
-        AIoverview_saveToDataBase();
+        await AIoverview_saveToDataBase();
     }
     catch (err) {
         console.error('', err)
-        AIoverview_saveToDataBase();
+        await AIoverview_saveToDataBase();
     }
 
 }
@@ -587,7 +609,6 @@ async function AIoverview_saveToDataBase() {
         const result = await web.save();
         console.log(result)
 
-        console.log("I have finished")
 
 
     } catch (err) {
@@ -600,6 +621,7 @@ async function AIoverview_saveToDataBase() {
 async function connectToDatabase() {
     try {
         const result = await mongoose.connect(connectionString)
+        console.log("Connected")
     }
     catch (err) {
         console.error('THERE IS BIG ERROR', err)
@@ -607,3 +629,4 @@ async function connectToDatabase() {
 
 
 }
+
