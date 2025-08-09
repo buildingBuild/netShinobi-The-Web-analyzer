@@ -10,6 +10,7 @@ const fs = require('fs')
 const mongoose = require('mongoose')
 const Web = require('./website.js')
 const express = require('express')
+const path = require('path');
 const app = express();
 app.use(express.json());
 app.use(express.static('public'))
@@ -330,12 +331,14 @@ async function detectFrameworks_takePictures() {
         await page2.setJavaScriptEnabled(true);
         await page2.goto(link, { waitUntil: "networkidle2" });
 
+        const phoneimgPath = path.join(__dirname, 'public', 'img_icons', 'mobileView.png');
+        const LaptopimgPath = path.join(__dirname, 'public', 'img_icons', 'LaptopView.png');
         await page.screenshot({
 
-            path: `${website.name}_mobileView.png`,
+            path: phoneimgPath,
             fullPage: true
         })
-        await page2.screenshot({ path: `${website.name}_LaptopView.png`, fullPage: true })
+        await page2.screenshot({ path: LaptopimgPath, fullPage: true })
     }
     catch (err) {
         console.error('ERROR', err)
@@ -489,13 +492,12 @@ async function detectFrameworks_takePictures() {
 async function getDesignElements() {
 
     try {
-        if (fs.existsSync(`${website.name}_LaptopView.png`)) {
+        const LaptopimgPath = path.join(__dirname, 'public', 'img_icons', 'LaptopView.png');
+
+        if (fs.existsSync(LaptopimgPath)) {
+            const imageBuffer = fs.readFileSync(LaptopimgPath);
+            const imageAsBase64 = imageBuffer.toString('base64');
             console.log('FILE EXISTS')
-
-
-            let imageAsBase64 = fs.readFileSync(`${website.name}_LaptopView.png`, 'base64');
-
-
 
 
             const response = await openai.responses.create({

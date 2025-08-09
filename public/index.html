@@ -113,10 +113,12 @@
         }
 
         .web-info {
+
             margin-top: -16px;
-            display: flex;
+            display: none;
             flex-direction: column;
-            background-color: #26282B
+            background-color: #26282B;
+
         }
 
         .web-info h1 {
@@ -319,14 +321,38 @@
             font-weight: 300;
             font-style: italic;
         }
+
+        .header-nav p>a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        .animate {
+            animation: fade 0.3s ease-in-out
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="header-nav">
-            <p>How It works</p>
-            <p>Report an Issue</p>
+            <p><a href="https://github.com/buildingBuild/netShinobi-The-Web-analyzer">How It works</a></p>
+            <p> <a href="https://github.com/buildingBuild/netShinobi-The-Web-analyzer/issues">Report an Issue </a></p>
         </div>
 
         <div class="selling-point">
@@ -336,65 +362,54 @@
             <h4>Enter a Website to analyze</h4>
             <input placeholder="https://example.com" id="searchBox">
             <img src="/img_icons/searcIcon.svg" id="searchbutton">
-            <h5>Check format</h5>
+            <h5 id="progressCheck">Check format</h5>
         </div>
         <hr>
-        <div class="web-info">
-            <h1>Spotify.com</h1>
+        <div class="web-info" id="cover">
+            <h1 id="domainName">Spotify.com</h1>
             <div class="s_o">
-                <h6>Website Status: Online </h6>
-                <h6>Website Secure: True </h6>
+                <h6 id="status">Website Status: Online </h6>
+                <h6 id="secure">Website Secure: True </h6>
             </div>
 
             <div class="ai_overview">
                 <h2>AI Overview </h2>
-                <h4>This website is a website that is blah blah. It was founded in blah blah blah This website is a
+                <h4 id="ai">This website is a website that is blah blah. It was founded in blah blah blah This website
+                    is a
                     website that is blah
                     blah. It was founded in blah blah blah</h4>
             </div>
             <div class="tech-stack">
                 <h2>Technology Stack</h2>
                 <h3>Detected Front-end</h3>
-                <div class="front-end-box">
-                    <div class="f-content">ReactJS</div>
-                    <div class="f-content">Tailwind css</div>
-                    <div class="f-content">React JS</div>
-                    <div class="f-content">React JS</div>
+                <div class="front-end-box" id="front-end">
+
                 </div>
                 <h3>Detected Back-end</h3>
-                <div class="front-end-box">
-                    <div class="f-content">React JS</div>
-                    <div class="f-content">React JS</div>
-                    <div class="f-content">React JS</div>
-                    <div class="f-content">React JS</div>
+                <div class="front-end-box" id="back-end">
 
                 </div>
             </div>
             <div class="design-stack">
                 <h2>Design Stack</h2>
                 <h3>Color Theme</h3>
-                <div class="design-box">
-                    <div class="d-content">#902 red</div>
-                    <div class="d-content">Blue</div>
-                    <div class="d-content">Blue</div>
+                <div class="design-box" id="color-box">
+
                 </div>
                 <h3>Key fonts</h3>
-                <div class="design-box">
-                    <div class="d-content">Sans-serif</div>
-                    <div class="d-content">Arial MT</div>
-                    <div class="d-content">Arial MTiiii</div>
+                <div class="design-box" id="font-box">
+
                 </div>
                 <h3>Layouts</h3>
                 <div class="img-layout">
-                    <img src="medium.com_mobileView.png" width="98" height="213" alt="mobile view"
-                        style="margin-top: 100px;">
-                    <img src="medium.com_LaptopView.png" width="160" height="104" alt="laptop view">
+                    <img src="" width="98" height="213" alt="mobile view" style="margin-top: 100px;" id="phone">
+                    <img src="" width="160" height="104" alt="laptop view" id="laptop">
                 </div>
             </div>
             <div class="hosting-info">
                 <h2>Hosting</h2>
-                <h3 style="margin-bottom: -10px;">IP Address: 192.8904958 </h3>
-                <h3>Hosting Providers: Amazon </h3>
+                <h3 style="margin-bottom: -10px;" id="ip">IP Address: 192.8904958 </h3>
+                <h3 id="host">Hosting Providers: Amazon </h3>
 
             </div>
 
