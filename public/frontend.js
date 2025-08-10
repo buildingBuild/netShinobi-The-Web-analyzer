@@ -112,6 +112,8 @@ async function activateWebsite() {
 
 
         progress.textContent = "Success!";
+        cover.classList.add("animate")
+        cover.style.display = 'flex'
 
     } catch (err) {
         console.log("Website status message:", err.message);
@@ -124,8 +126,6 @@ async function activateWebsite() {
         running = false;
         ++pageRun
 
-        cover.classList.add("animate")
-        cover.style.display = 'flex'
 
     }
 }

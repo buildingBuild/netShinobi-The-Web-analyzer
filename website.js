@@ -23,7 +23,8 @@ const websiteSchema = new Schema({
     contactAdress: String,
     fullLink: String,
     hostingProvider: [String],
-    AI_Overview: String
+    AI_Overview: String,
+    user_ip: String,
 }, { timestamps: true });
 
 const Web = mongoose.model('Web', websiteSchema, 'Web')

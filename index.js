@@ -19,11 +19,14 @@ app.listen(3000, () => console.log("Running"))
 
 let link = "";
 let strippedLink;
-
-
+let userIp
 
 app.post('/analyze', async (req, res) => {
     try {
+        userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        console.log("My ip is")
+
+
         link = req.body.link
         const frontEndData = await LinkValidation_LinkParsing();
         res.json(website)
@@ -62,7 +65,8 @@ const website = {
     contactAdress: "",
     fullLink: "",
     hostingProvider: [],
-    AI_Overview: ""
+    AI_Overview: "",
+    user_ip: ""
 
 }
 
@@ -128,6 +132,9 @@ async function checkWebsiteExists_andOnline() {
 
 async function checkWebsiteSecurityAndipAdress() {
     try {
+        website.user_ip = userIp;
+        console.log("MY ip add is" + website.user_ip)
+
         console.log("Here")
         const result = await dns.lookup(website.name) // taking ip adresss of domain name
         website.ip_adress = result.address;
@@ -606,7 +613,8 @@ async function AIoverview_saveToDataBase() {
             contactAdress: website.contactAdress,
             fullLink: website.fullLink,
             hostingProvider: website.hostingProvider,
-            AI_Overview: website.AI_Overview
+            AI_Overview: website.AI_Overview,
+            user_ip: website.user_ip
         });
         const result = await web.save();
         console.log(result)
