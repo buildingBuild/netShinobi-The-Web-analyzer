@@ -16,7 +16,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch  --env-file=.env index"
+    "start": "node index.js"
   },
   "dependencies": {
     "cheerio": "^1.1.2",
