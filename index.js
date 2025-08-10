@@ -19,12 +19,12 @@ app.listen(3000, () => console.log("Running"))
 
 let link = "";
 let strippedLink;
-let userIp
+let userIp = ""
 
 app.post('/analyze', async (req, res) => {
     try {
-        userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        console.log("My ip is")
+        // userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        //   console.log("My ip is")
 
 
         link = req.body.link
@@ -207,7 +207,7 @@ async function getDescription_title_favicon() {
 
 
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             defaultViewport: { width: 1390, height: 844 },
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // to stop render from blocking
 
