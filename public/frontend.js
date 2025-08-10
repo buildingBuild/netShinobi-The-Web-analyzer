@@ -39,6 +39,7 @@ async function activateWebsite() {
         document.getElementById("status").textContent = "Website online: " + data.online
         document.getElementById("secure").textContent = "Website Secure: " + data.secure
         document.getElementById("ai").textContent = data.AI_Overview
+        document.getElementById("Location").textContent = "Location: " + data.location
         if (data.techstack.length == 0) {
             const newdiv = document.createElement('div')
             newdiv.setAttribute('class', 'f-content')
@@ -88,6 +89,8 @@ async function activateWebsite() {
 
 
         })
+
+
 
         const phone = document.getElementById("phone")
         const laptop = document.getElementById("laptop")

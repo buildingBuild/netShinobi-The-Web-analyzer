@@ -49,6 +49,7 @@
             justify-content: center;
             margin: 2px;
 
+
         }
 
         .selling-point {
@@ -118,6 +119,8 @@
             display: none;
             flex-direction: column;
             background-color: #26282B;
+            display: flex;
+
 
         }
 
@@ -328,7 +331,17 @@
         }
 
         .animate {
-            animation: fade 0.3s ease-in-out
+            animation: fade 1s ease-in-out
+        }
+
+        .phone-img {
+            width: 98px;
+            height: 213px
+        }
+
+        .laptop-img {
+            width: 160px;
+            height: 104px
         }
 
         @keyframes fade {
@@ -343,6 +356,21 @@
             100% {
                 opacity: 1;
             }
+
+        }
+
+
+        @media (min-width: 425px) {
+            .phone-img {
+                width: 196px;
+                height: 426px
+            }
+
+            .laptop-img {
+                width: 160px;
+                height: 208px
+            }
+
 
         }
     </style>
@@ -362,7 +390,7 @@
             <h4>Enter a Website to analyze</h4>
             <input placeholder="https://example.com" id="searchBox">
             <img src="/img_icons/searcIcon.svg" id="searchbutton">
-            <h5 id="progressCheck">Check format</h5>
+            <h5 id="progressCheck"></h5>
         </div>
         <hr>
         <div class="web-info" id="cover">
@@ -402,12 +430,13 @@
                 </div>
                 <h3>Layouts</h3>
                 <div class="img-layout">
-                    <img src="" width="98" height="213" alt="mobile view" style="margin-top: 100px;" id="phone">
-                    <img src="" width="160" height="104" alt="laptop view" id="laptop">
+                    <img src="" alt="mobile view" style="margin-top: 100px;" id="phone" class="phone-img">
+                    <img src="" alt="laptop view" id="laptop" class="laptop-img">
                 </div>
             </div>
             <div class="hosting-info">
                 <h2>Hosting</h2>
+                <h3 style="margin-bottom: -10px;" id="Location">Location:</h3>
                 <h3 style="margin-bottom: -10px;" id="ip">IP Address: 192.8904958 </h3>
                 <h3 id="host">Hosting Providers: Amazon </h3>
 
