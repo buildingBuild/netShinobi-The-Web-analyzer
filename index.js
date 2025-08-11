@@ -17,13 +17,13 @@ app.use(express.static('public'))
 
 
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => console.log("Running"))
 
-app.get('/get', (req, res) => {
 
-    console.log("it works")
+app.get("/", (req, res) => res.send("Server running"));
 
-})
+app.listen(PORT, "0.0.0.0", () => console.log(`Running on ${PORT}`)); // testing to see 
+
+
 
 let link = "";
 let strippedLink;
