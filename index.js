@@ -177,7 +177,8 @@ async function websiteHostingCheck() {
 
         const browser = await puppeteer.launch({
             headless: true,
-            defaultViewports: { width: 1390, height: 844 }
+            defaultViewports: { width: 1390, height: 844 },
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
 
         });
 
@@ -325,6 +326,7 @@ async function detectFrameworks_takePictures() {
     // Puppet Launch 
     const browser = await puppeteer.launch({
         headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
 
     });
     let page = await browser.newPage();
