@@ -2,7 +2,9 @@
 NetShinobi is a web intelligence tool that extracts useful info about any website. It helps developers and designers see what’s behind the page like tech stack, design elements, and even security status.
 
 ## 🌐 Live Site
-About to be deployed (Coming soon...🎉🎉)
+https://netshinobi-web-analyzer.up.railway.app
+(search functions are slow due to server used , working on a fix to speed up the process)
+
 
 ## Features
 
