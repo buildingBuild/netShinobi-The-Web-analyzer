@@ -588,7 +588,7 @@ async function AIoverview_saveToDataBase() {
     try {
         const response = await openai.responses.create({
             model: "gpt-4o-mini",
-            input: `Return a concise summary of the website object make it friendly. Take into consideration its tld  e.g ___ is a commercial site hosted in the United States. It's built with Node.js, Express, and MongoDB. ${JSON.stringify(subWebsite)}`,
+            input: `(dont say sure just give answer to request)Return a concise summary of the website object make it friendly. Take into consideration its tld  e.g ___ is a commercial site hosted in the United States. It's built with Node.js, Express, and MongoDB. ${JSON.stringify(subWebsite)}`,
             store: true,
         });
 
