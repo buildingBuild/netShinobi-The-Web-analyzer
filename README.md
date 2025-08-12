@@ -3,7 +3,9 @@ NetShinobi is a web intelligence tool that extracts useful info about any websit
 
 ## 🌐 Live Site
 https://netshinobi-web-analyzer.up.railway.app
-(search functions are slow due to server used , working on a fix to speed up the process)
+[Search/scrape functions can be slow due to the the way cloud hosting platforms handle web scraping]
+Run locally for extremly fast results 
+
 
 
 ## Features
@@ -32,6 +34,20 @@ https://netshinobi-web-analyzer.up.railway.app
 
 ## Screenshots
 Coming soon...
+
+
+
+## How to Run Locally
+
+Clone the repository and navigate into its folder.  
+Run `npm install` to install dependencies.  
+In your package.json, ensure the start script is set to `"start": "node --watch --env-file=.env index"`.  
+Add your `.env` file to the root directory with the required environment variables.  
+Start the app with `npm run start`.  
+Open your browser and go to `http://localhost:3000`.
+
+
+
 
 <div>
 </div>
