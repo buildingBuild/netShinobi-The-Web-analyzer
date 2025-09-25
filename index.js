@@ -1,58 +1,34 @@
 const { URL } = require('url');
 const http = require('http');
-const { error } = require('console');
 const dns = require('dns').promises;
-const puppeteer = require("puppeteer");
-const cheerio = require('cheerio')
-const OpenAI = require("openai");
-const { json } = require('express');
-const fs = require('fs')
-const mongoose = require('mongoose')
-const Web = require('./website.js')
-const express = require('express')
+const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
+const OpenAI = require('openai');
+const fs = require('fs');
+const mongoose = require('mongoose');
+const Web = require('./website.js');
+const express = require('express');
 const path = require('path');
 const app = express();
+
+const PORT = process.env.PORT || 3000;
+const connectionString = process.env.DATABASE_STRING || 3000
+const openai = new OpenAI({ apiKey: process.env.API_KEY });
+
+async function connectToDatabase() {
+    try {
+        await mongoose.connect(connectionString);
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('THERE IS BIG ERROR connecting to DB:', err);
+    }
+}
+connectToDatabase();
+
+
 app.use(express.json());
 app.use(express.static('public'))
 
-
-const PORT = process.env.PORT || 3000
-
-
-app.get("/", (req, res) => res.send("Server running"));
-
-app.listen(PORT, "0.0.0.0", () => console.log(`Running on ${PORT}`)); // testing to see 
-
-
-
-let link = "";
-let strippedLink;
-let userIp = ""
-
-app.post('/analyze', async (req, res) => {
-    try {
-        // userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        //   console.log("My ip is")
-
-
-        link = req.body.link
-        const frontEndData = await LinkValidation_LinkParsing();
-        res.json(website)
-    }
-    catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-
-})
-const connectionString = process.env.DATABASE_STRING;
-
-
-
-const openai = new OpenAI({
-
-    apiKey: process.env.API_KEY
-
-});
 
 const website = {
     name: "",
@@ -78,11 +54,36 @@ const website = {
 
 }
 
+let link = "";
+let strippedLink;
+let userIp = ""
+
+
+app.get('/', (req, res) => res.send("Server running"));
+
+app.get('/analyze', async (req, res) => {
+    try {
+        const { userlink } = req.query
+
+        link = userlink
+
+        if (!link) {
+            return res.status(400).json({ error: 'Missing link' });
+        }
+
+        await LinkValidation_LinkParsing();
+        res.json(website)
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+
+})
 
 
 
 async function LinkValidation_LinkParsing() {
-    connectToDatabase();
+
     try {
         strippedLink = new URL(link)
         // console.log(strippedLink)
@@ -651,4 +652,6 @@ async function connectToDatabase() {
 
 
 }
+
+app.listen(PORT, () => console.log(`Running on ${PORT}`)); // testing to see 
 
