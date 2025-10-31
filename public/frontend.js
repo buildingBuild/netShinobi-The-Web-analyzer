@@ -18,6 +18,8 @@ async function activateWebsite() {
         return;
     }
 
+
+
     running = true;
     progress.textContent = "Searching...."
 

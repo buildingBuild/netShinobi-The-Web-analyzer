@@ -3,4 +3,6 @@ node_modules
 .env
 _LaptopView.png
 _mobileView.png
+LaptopView.png
+mobileView.png
 .vscode

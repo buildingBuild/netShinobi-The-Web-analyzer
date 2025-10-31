@@ -7,6 +7,11 @@
 
  }
 
+#searchbutton{
+    filter: brightness(50%);
+}
+
+
  .header-nav {
      display: flex;
      flex-direction: row;
@@ -46,6 +51,8 @@
      margin-bottom: 0px;
 
  }
+
+ 
 
  .selling-point h3 {
      font-family: "Montserrat", sans-serif;
@@ -99,9 +106,6 @@
      display: none;
      flex-direction: column;
      background-color: #26282B;
-    
-
-
  }
 
  .web-info h1 {

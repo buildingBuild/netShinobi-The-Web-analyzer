@@ -59,7 +59,7 @@ let userIp = ""
 
 app.get('/analyze', async (req, res) => {
     try {
-        // await connectToDatabase();
+        await connectToDatabase();
         const { userlink } = req.query
 
         link = userlink
@@ -324,7 +324,7 @@ async function detectFrameworks_takePictures() {
     // Puppet Launch 
     const browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        args: ['--no-sandbox']
 
     });
     let page = await browser.newPage();
@@ -366,12 +366,12 @@ async function detectFrameworks_takePictures() {
         // Detecting CSS Frameworks , Tailwind & Bootstrap & Bulma
 
         let tailwind_exist = false;
-        // console.log(websiteContinua)
+        console.log(websiteContinua)
 
         let tailwindCounter = 0;
         const tailwindHints = ["flex", "hidden", "mt-", "text-", "bg-", "w-full", "h-screen", "mt-", "mb-", "p-", "gap-4"];
 
-        tailwindHints.forEach((hint) => {
+        tailwindHints.forEach(hint => {
             if (websiteContinua.includes(hint)) {
                 ++tailwindCounter;
             }
@@ -417,7 +417,7 @@ async function detectFrameworks_takePictures() {
 
         if (!ReactJs_exists) {
             const ReactHints = ['id="root"', "data-reactroot"];
-            ReactHints.some((hint) => {
+            ReactHints.some(hint => {
                 if (websiteContinua.includes(hint)) {
                     ReactJs_exists = true;
                     website.techstack.push("React.js")
