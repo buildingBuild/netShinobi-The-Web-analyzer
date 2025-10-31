@@ -1,3 +1,6 @@
+let localLink = "http://localhost:5000"
+let deployedLink = ""
+
 
 const searchButton = document.getElementById("searchbutton")
 const progress = document.getElementById("progressCheck")
@@ -19,20 +22,14 @@ async function activateWebsite() {
     progress.textContent = "Searching...."
 
     try {
-
-        let response = await fetch('/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ link: document.getElementById("searchBox").value }),
-        });
-
+        let response = await fetch(`${localLink}/analyze?userlink=${document.getElementById("searchBox").value}`)
+        console.log(response)
         const data = await response.json();
 
         if (!response.ok) {
             throw new Error(data.error || 'Unknown error');
         }
 
-        //   console.log("this is the returned data");
         console.log(data);
 
         document.getElementById("domainName").textContent = data.name

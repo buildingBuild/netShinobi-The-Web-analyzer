@@ -23,8 +23,6 @@ async function connectToDatabase() {
         console.error('THERE IS BIG ERROR connecting to DB:', err);
     }
 }
-connectToDatabase();
-
 
 app.use(express.json());
 app.use(express.static('public'))
@@ -59,10 +57,9 @@ let strippedLink;
 let userIp = ""
 
 
-app.get('/', (req, res) => res.send("Server running"));
-
 app.get('/analyze', async (req, res) => {
     try {
+        // await connectToDatabase();
         const { userlink } = req.query
 
         link = userlink
