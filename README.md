@@ -34,7 +34,7 @@ Open your browser and go to `http://localhost:3000`.
 
 ## Screenshots
 
-<<<<<<< HEAD
+
 | <img src="screenshots/1.png" width="200"> | <img src="screenshots/1.5.png" width="200"> |
 |-------------------------------------------|---------------------------------------------|
 | <img src="screenshots/2.png" width="200"> | <img src="screenshots/2.5.png" width="200"> |
