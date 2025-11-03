@@ -9,8 +9,10 @@ const mongoose = require('mongoose');
 const Web = require('./website.js');
 const express = require('express');
 const path = require('path');
+const cors = require('cors')
 const app = express();
 
+app.use(cors());
 const PORT = process.env.PORT || 3000;
 const connectionString = process.env.DATABASE_STRING || 3000
 const openai = new OpenAI({ apiKey: process.env.API_KEY });

@@ -1,5 +1,5 @@
 let localLink = "http://localhost:5000"
-let deployedLink = "netshinobi-web-analyzer.up.railway.app"
+let deployedLink = "https://netshinobi-web-analyzer.up.railway.app"
 
 
 const searchButton = document.getElementById("searchbutton")
