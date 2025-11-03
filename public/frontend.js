@@ -1,5 +1,5 @@
 let localLink = "http://localhost:5000"
-let deployedLink = ""
+let deployedLink = "netshinobi-web-analyzer.up.railway.app"
 
 
 const searchButton = document.getElementById("searchbutton")
@@ -24,7 +24,7 @@ async function activateWebsite() {
     progress.textContent = "Searching...."
 
     try {
-        let response = await fetch(`${localLink}/analyze?userlink=${document.getElementById("searchBox").value}`)
+        let response = await fetch(`${deployedLink}/analyze?userlink=${document.getElementById("searchBox").value}`)
         console.log(response)
         const data = await response.json();
 
