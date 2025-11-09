@@ -1,7 +1,7 @@
 const { URL } = require('url');
 const http = require('http');
 const dns = require('dns').promises;
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const cheerio = require('cheerio');
 const OpenAI = require('openai');
 const fs = require('fs');
