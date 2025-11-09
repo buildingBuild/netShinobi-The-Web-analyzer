@@ -174,15 +174,21 @@ async function websiteHostingCheck() {
 
     try {
 
+        /*
+                const browser = await puppeteer.launch({
+                    headless: true,
+                    defaultViewports: { width: 1390, height: 844 },
+                    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        
+                });
+            */
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            defaultViewports: { width: 1390, height: 844 },
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-
+        const browser = await puppeteer.connect({
+            browserWSEndpoint: process.env.BROWSER_WS_ENDPOINT,
         });
 
         const page = await browser.newPage();
+        await page.setViewport({ width: 1390, height: 844 });
         page.setDefaultNavigationTimeout(0.5 * 60 * 1000)
         await page.goto("https://hostingchecker.com")
         await page.locator('input').fill(link)
@@ -214,17 +220,21 @@ async function websiteHostingCheck() {
 async function getDescription_title_favicon() {
     try {
 
-
-        const browser = await puppeteer.launch({
-            headless: true,
-            defaultViewport: { width: 1390, height: 844 },
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // to stop render from blocking
-
-
+        /*
+                const browser = await puppeteer.launch({
+                    headless: true,
+                    defaultViewport: { width: 1390, height: 844 },
+                    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // to stop render from blocking
+        
+        
+                });
+            */
+        const browser = await puppeteer.connect({
+            browserWSEndpoint: process.env.BROWSER_WS_ENDPOINT,
         });
 
-
         const page = await browser.newPage();
+        await page.setViewport({ width: 1390, height: 844 });
         page.setDefaultNavigationTimeout(3 * 60 * 1000)
         await page.goto(link)
 
@@ -324,11 +334,17 @@ async function detectFrameworks_takePictures() {
 
 
     // Puppet Launch 
+    /*
     const browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox']
 
     });
+    */
+    const browser = await puppeteer.connect({
+        browserWSEndpoint: process.env.BROWSER_WS_ENDPOINT,
+    });
+
     let page = await browser.newPage();
     let page2 = await browser.newPage() // open for laptop screen
 
